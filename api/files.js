@@ -22,19 +22,17 @@ function formatDate(date) {
 }
 
 module.exports = (req, res) => {
-    // If someone goes directly to /api/files.js or /files/api/files.js, serve its own source code
     if (req.url && req.url.includes('api/files.js')) {
         try {
             const selfContent = fs.readFileSync(__filename, 'utf8');
             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
             res.status(200).send(selfContent);
             return;
-        } catch (err) {
-            // Fall through if file read fails
-        }
+        } catch (err) {}
     }
 
-    const rootDir = process.cwd();
+    const hasSCo = req.query.sCo !== undefined;
+    const hasOSc = req.query.oSc !== undefined;
     
     const pathParam = req.query.path;
     let relDir = '';
@@ -44,12 +42,21 @@ module.exports = (req, res) => {
         relDir = pathParam;
     }
 
-    const targetPath = path.resolve(rootDir, relDir);
-    
-    if (!targetPath.startsWith(rootDir)) {
-        res.status(403).send('Access denied');
-        return;
+    // If visiting /files without authorization parameters, serve code.html
+    if (!hasSCo && !hasOSc) {
+        try {
+            const codeHtmlPath = path.join(process.cwd(), 'api', 'code.html');
+            if (fs.existsSync(codeHtmlPath)) {
+                const codeContent = fs.readFileSync(codeHtmlPath, 'utf8');
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.status(200).send(codeContent);
+                return;
+            }
+        } catch (e) {}
     }
+
+    const rootDir = process.cwd();
+    const targetPath = path.resolve(rootDir, relDir);
 
     try {
         if (!fs.existsSync(targetPath)) {
@@ -74,29 +81,34 @@ module.exports = (req, res) => {
 
         const files = fs.readdirSync(targetPath);
         
+        // Retain the correct mode parameter in links when navigating subfolders
+        const modeParam = hasSCo ? 'sCo=true' : 'oSc=true';
+
+        // Apply blacklisted items ONLY when viewing via ?oSc
         const filteredFiles = files.filter(file => {
-            return !file.startsWith('.git') && file !== 'node_modules';
+            if (hasOSc) {
+                const blacklistedItems = ['__vc', '.git', 'node_modules'];
+                if (blacklistedItems.includes(file)) return false;
+            }
+            return true;
         });
 
         let tableRows = '';
 
-        if (relDir) {
-            const parentDir = path.dirname(relDir);
-            const parentHref = parentDir === '.' || parentDir === '' ? '/files' : `/files/${parentDir}`;
-            tableRows += `
-            <tr>
-                <td><span class="icon">📁</span><a href="${parentHref}">[parent directory]</a></td>
-                <td class="col-size">-</td>
-                <td class="col-date">-</td>
-            </tr>`;
+        let computedParentRel = '';
+        if (relDir === '' || relDir === '.') {
+            computedParentRel = '..';
         } else {
-            tableRows += `
-            <tr>
-                <td><span class="icon">📁</span><a href="/">[parent directory]</a></td>
-                <td class="col-size">-</td>
-                <td class="col-date">-</td>
-            </tr>`;
+            computedParentRel = path.join(relDir, '..');
         }
+        const parentHref = `/files/${computedParentRel}?${modeParam}`;
+
+        tableRows += `
+        <tr>
+            <td><span class="icon">📁</span><a href="${parentHref}">[parent directory]</a></td>
+            <td class="col-size">-</td>
+            <td class="col-date">-</td>
+        </tr>`;
 
         filteredFiles.forEach(file => {
             const filePath = path.join(targetPath, file);
@@ -112,8 +124,13 @@ module.exports = (req, res) => {
             const dateModified = formatDate(fileStats.mtime);
             
             const icon = isDirectory ? '📁' : '📄';
-            const subDirPath = relDir ? `${relDir}/${file}` : file;
-            const href = `/files/${subDirPath}`;
+            let subDirPath = '';
+            if (relDir === '' || relDir === '.') {
+                subDirPath = file;
+            } else {
+                subDirPath = `${relDir}/${file}`;
+            }
+            const href = `/files/${subDirPath}?${modeParam}`;
 
             tableRows += `
             <tr>
@@ -144,11 +161,6 @@ module.exports = (req, res) => {
                     margin: 0 0 15px 0;
                     border-bottom: 1px solid #555555;
                     padding-bottom: 10px;
-                }
-                .parent-dir {
-                    margin-bottom: 20px;
-                    font-family: 'Times New Roman', Times, serif;
-                    font-size: 1.1rem;
                 }
                 a {
                     color: #8ab4f8;

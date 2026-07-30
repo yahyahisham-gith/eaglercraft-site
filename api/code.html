@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Passcode</title>
+    <style>
+        body {
+            background-color: #111111;
+            color: #ffffff;
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .box {
+            background-color: #222222;
+            border: 1px solid #444444;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        p {
+            color: #aaaaaa;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: #111111;
+            border: 1px solid #555555;
+            color: #ffffff;
+            font-size: 1rem;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #388e3c;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        button:hover {
+            background-color: #4caf50;
+        }
+        .btn-osc {
+            background-color: #d32f2f;
+        }
+        .btn-osc:hover {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Passcode Required</h2>
+        <p>Enter the passcode to unlock full access:</p>
+        <input type="password" id="passcodeInput" placeholder="Enter passcode...">
+        <button onclick="verifyCode()">Enter with Code</button>
+        <p style="margin: 10px 0; font-size: 0.85rem;">or</p>
+        <button class="btn-osc" onclick="skipCode()">View without Code</button>
+    </div>
+
+    <script>
+        // Set your actual required passcode here
+        const CORRECT_PASSCODE = "admin123";
+
+        function verifyCode() {
+            const enteredCode = document.getElementById('passcodeInput').value;
+            
+            if (enteredCode === CORRECT_PASSCODE) {
+                // Correct code: grants full access with ?sCo
+                window.location.href = '/files?sCo=true';
+            } else {
+                alert('Incorrect passcode! Please try again.');
+            }
+        }
+
+        function skipCode() {
+            // Skips passcode and routes to restricted mode with ?oSc
+            window.location.href = '/files?oSc=true';
+        }
+    </script>
+</body>
+</html>
