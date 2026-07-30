@@ -3,7 +3,7 @@
   "trailingSlash": false,
   "functions": {
     "api/files.js": {
-      "includeFiles": "**/*.html"
+      "includeFiles": "**/*"
     }
   },
   "headers": [
@@ -22,6 +22,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/files/:path*",
+      "destination": "/api/files"
+    },
     {
       "source": "/files",
       "destination": "/api/files"

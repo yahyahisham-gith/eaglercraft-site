@@ -22,32 +22,98 @@ function formatDate(date) {
 }
 
 module.exports = (req, res) => {
-    // This actively queries Vercel's server environment for the exact working directory path
-    const directoryPath = process.cwd();
+    // If someone goes directly to /api/files.js or /files/api/files.js, serve its own source code
+    if (req.url && req.url.includes('api/files.js')) {
+        try {
+            const selfContent = fs.readFileSync(__filename, 'utf8');
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            res.status(200).send(selfContent);
+            return;
+        } catch (err) {
+            // Fall through if file read fails
+        }
+    }
+
+    const rootDir = process.cwd();
     
+    const pathParam = req.query.path;
+    let relDir = '';
+    if (Array.isArray(pathParam)) {
+        relDir = pathParam.join('/');
+    } else if (typeof pathParam === 'string') {
+        relDir = pathParam;
+    }
+
+    const targetPath = path.resolve(rootDir, relDir);
+    
+    if (!targetPath.startsWith(rootDir)) {
+        res.status(403).send('Access denied');
+        return;
+    }
+
     try {
-        if (!directoryPath) {
-            throw new Error("Vercel server failed to return a valid directory path.");
+        if (!fs.existsSync(targetPath)) {
+            res.status(404).send('Not Found');
+            return;
         }
 
-        const files = fs.readdirSync(directoryPath);
+        const stats = fs.statSync(targetPath);
+
+        if (stats.isFile()) {
+            const ext = path.extname(targetPath).toLowerCase();
+            let contentType = 'text/plain; charset=utf-8';
+            if (ext === '.html') contentType = 'text/html; charset=utf-8';
+            else if (ext === '.js') contentType = 'application/javascript; charset=utf-8';
+            else if (ext === '.json') contentType = 'application/json; charset=utf-8';
+
+            const fileContent = fs.readFileSync(targetPath);
+            res.setHeader('Content-Type', contentType);
+            res.status(200).send(fileContent);
+            return;
+        }
+
+        const files = fs.readdirSync(targetPath);
         
         const filteredFiles = files.filter(file => {
-            return !file.startsWith('.') && file !== 'node_modules' && file !== 'api';
+            return !file.startsWith('.git') && file !== 'node_modules';
         });
 
         let tableRows = '';
 
+        if (relDir) {
+            const parentDir = path.dirname(relDir);
+            const parentHref = parentDir === '.' || parentDir === '' ? '/files' : `/files/${parentDir}`;
+            tableRows += `
+            <tr>
+                <td><span class="icon">📁</span><a href="${parentHref}">[parent directory]</a></td>
+                <td class="col-size">-</td>
+                <td class="col-date">-</td>
+            </tr>`;
+        } else {
+            tableRows += `
+            <tr>
+                <td><span class="icon">📁</span><a href="/">[parent directory]</a></td>
+                <td class="col-size">-</td>
+                <td class="col-date">-</td>
+            </tr>`;
+        }
+
         filteredFiles.forEach(file => {
-            const filePath = path.join(directoryPath, file);
-            const stats = fs.statSync(filePath);
+            const filePath = path.join(targetPath, file);
+            let fileStats;
+            try {
+                fileStats = fs.statSync(filePath);
+            } catch (e) {
+                return;
+            }
             
-            const isDirectory = stats.isDirectory();
-            const size = isDirectory ? '-' : formatBytes(stats.size);
-            const dateModified = formatDate(stats.mtime);
+            const isDirectory = fileStats.isDirectory();
+            const size = isDirectory ? '-' : formatBytes(fileStats.size);
+            const dateModified = formatDate(fileStats.mtime);
             
             const icon = isDirectory ? '📁' : '📄';
-            const href = isDirectory ? `/${file}/` : `/${file}`;
+            const subDirPath = relDir ? `${relDir}/${file}` : file;
+            const href = `/files/${subDirPath}`;
 
             tableRows += `
             <tr>
@@ -63,7 +129,7 @@ module.exports = (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Index of ${directoryPath}</title>
+            <title>Index of ${targetPath}</title>
             <style>
                 body {
                     background-color: #111111;
@@ -123,11 +189,7 @@ module.exports = (req, res) => {
             </style>
         </head>
         <body>
-            <h1>Index of ${directoryPath}</h1>
-            
-            <div class="parent-dir">
-                <a href="/"><span class="icon">📁</span>[parent directory]</a>
-            </div>
+            <h1>Index of ${targetPath}</h1>
 
             <table>
                 <thead>
@@ -149,6 +211,6 @@ module.exports = (req, res) => {
         
     } catch (err) {
         console.error("Error reading directory:", err);
-        res.status(500).send(`Error generating directory index: ${err.message}`);
+        res.status(500).send(`Error reading path: ${err.message}`);
     }
 };
