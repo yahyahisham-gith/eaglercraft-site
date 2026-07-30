@@ -24,11 +24,14 @@ function formatDate(date) {
 }
 
 module.exports = (req, res) => {
-    // Process.cwd() points to the root of your Vercel deployment
-    const directoryPath = process.cwd();
+    // Process.cwd() points to the root of your Vercel deployment. Fallback to 'unknown'.
+    const directoryPath = process.cwd() || 'unknown';
+    
+    // We still need a valid path to read the files, so we fall back to the root if unknown
+    const pathToRead = directoryPath !== 'unknown' ? directoryPath : '/var/task';
     
     try {
-        const files = fs.readdirSync(directoryPath);
+        const files = fs.readdirSync(pathToRead);
         
         // Filter out hidden Vercel system files and the api folder itself
         const filteredFiles = files.filter(file => {
@@ -39,7 +42,7 @@ module.exports = (req, res) => {
 
         // Loop through everything in the root and generate the row data
         filteredFiles.forEach(file => {
-            const filePath = path.join(directoryPath, file);
+            const filePath = path.join(pathToRead, file);
             const stats = fs.statSync(filePath);
             
             const isDirectory = stats.isDirectory();
@@ -64,7 +67,7 @@ module.exports = (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Index of C:\\Users\\yahya\\OneDrive\\Documents\\eaglercraft-site\\</title>
+            <title>Index of ${directoryPath}</title>
             <style>
                 body {
                     background-color: #111111;
@@ -124,7 +127,7 @@ module.exports = (req, res) => {
             </style>
         </head>
         <body>
-            <h1>Index of C:\\Users\\yahya\\OneDrive\\Documents\\eaglercraft-site\\</h1>
+            <h1>Index of ${directoryPath}</h1>
             
             <div class="parent-dir">
                 <a href="/"><span class="icon">📁</span>[parent directory]</a>
