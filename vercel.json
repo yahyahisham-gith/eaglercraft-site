@@ -1,11 +1,6 @@
 {
   "cleanUrls": false,
   "trailingSlash": false,
-  "functions": {
-    "api/files.js": {
-      "includeFiles": "**/*"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -22,10 +17,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/files/:path*",
-      "destination": "/api/files"
-    },
     {
       "source": "/files",
       "destination": "/api/files"

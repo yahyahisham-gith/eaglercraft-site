@@ -22,6 +22,7 @@ function formatDate(date) {
 }
 
 module.exports = (req, res) => {
+    // Serve its own source code when requested directly
     if (req.url && req.url.includes('api/files.js')) {
         try {
             const selfContent = fs.readFileSync(__filename, 'utf8');
@@ -33,14 +34,6 @@ module.exports = (req, res) => {
 
     const hasSCo = req.query.sCo !== undefined;
     const hasOSc = req.query.oSc !== undefined;
-    
-    const pathParam = req.query.path;
-    let relDir = '';
-    if (Array.isArray(pathParam)) {
-        relDir = pathParam.join('/');
-    } else if (typeof pathParam === 'string') {
-        relDir = pathParam;
-    }
 
     // If visiting /files without authorization parameters, serve code.html
     if (!hasSCo && !hasOSc) {
@@ -56,7 +49,10 @@ module.exports = (req, res) => {
     }
 
     const rootDir = process.cwd();
-    const targetPath = path.resolve(rootDir, relDir);
+    
+    // Read the target directory dynamically from the ?dir= query parameter
+    const dirParam = req.query.dir || '';
+    const targetPath = path.resolve(rootDir, dirParam);
 
     try {
         if (!fs.existsSync(targetPath)) {
@@ -66,6 +62,7 @@ module.exports = (req, res) => {
 
         const stats = fs.statSync(targetPath);
 
+        // If it's a file, serve its contents directly
         if (stats.isFile()) {
             const ext = path.extname(targetPath).toLowerCase();
             let contentType = 'text/plain; charset=utf-8';
@@ -80,9 +77,7 @@ module.exports = (req, res) => {
         }
 
         const files = fs.readdirSync(targetPath);
-        
-        // Retain the correct mode parameter in links when navigating subfolders
-        const modeParam = hasSCo ? 'sCo=true' : 'oSc=true';
+        const modeKey = hasSCo ? 'sCo=true' : 'oSc=true';
 
         // Apply blacklisted items ONLY when viewing via ?oSc
         const filteredFiles = files.filter(file => {
@@ -95,13 +90,10 @@ module.exports = (req, res) => {
 
         let tableRows = '';
 
-        let computedParentRel = '';
-        if (relDir === '' || relDir === '.') {
-            computedParentRel = '..';
-        } else {
-            computedParentRel = path.join(relDir, '..');
-        }
-        const parentHref = `/files/${computedParentRel}?${modeParam}`;
+        // Dynamically compute the parent directory relative to rootDir
+        const parentAbsPath = path.resolve(targetPath, '..');
+        const parentRelDir = path.relative(rootDir, parentAbsPath);
+        const parentHref = parentRelDir ? `/files?dir=${encodeURIComponent(parentRelDir)}&${modeKey}` : `/files?${modeKey}`;
 
         tableRows += `
         <tr>
@@ -124,13 +116,8 @@ module.exports = (req, res) => {
             const dateModified = formatDate(fileStats.mtime);
             
             const icon = isDirectory ? '📁' : '📄';
-            let subDirPath = '';
-            if (relDir === '' || relDir === '.') {
-                subDirPath = file;
-            } else {
-                subDirPath = `${relDir}/${file}`;
-            }
-            const href = `/files/${subDirPath}?${modeParam}`;
+            const childRelPath = path.relative(rootDir, filePath);
+            const href = `/files?dir=${encodeURIComponent(childRelPath)}&${modeKey}`;
 
             tableRows += `
             <tr>
