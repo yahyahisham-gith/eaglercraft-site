@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// Helper to calculate accurate file sizes dynamically
 function formatBytes(bytes) {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -10,7 +9,6 @@ function formatBytes(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-// Helper to format the date exactly like the browser index
 function formatDate(date) {
     return date.toLocaleString('en-US', {
         month: 'numeric',
@@ -24,25 +22,24 @@ function formatDate(date) {
 }
 
 module.exports = (req, res) => {
-    // Process.cwd() points to the root of your Vercel deployment. Fallback to 'unknown'.
-    const directoryPath = process.cwd() || 'unknown';
-    
-    // We still need a valid path to read the files, so we fall back to the root if unknown
-    const pathToRead = directoryPath !== 'unknown' ? directoryPath : '/var/task';
+    // This actively queries Vercel's server environment for the exact working directory path
+    const directoryPath = process.cwd();
     
     try {
-        const files = fs.readdirSync(pathToRead);
+        if (!directoryPath) {
+            throw new Error("Vercel server failed to return a valid directory path.");
+        }
+
+        const files = fs.readdirSync(directoryPath);
         
-        // Filter out hidden Vercel system files and the api folder itself
         const filteredFiles = files.filter(file => {
             return !file.startsWith('.') && file !== 'node_modules' && file !== 'api';
         });
 
         let tableRows = '';
 
-        // Loop through everything in the root and generate the row data
         filteredFiles.forEach(file => {
-            const filePath = path.join(pathToRead, file);
+            const filePath = path.join(directoryPath, file);
             const stats = fs.statSync(filePath);
             
             const isDirectory = stats.isDirectory();
@@ -60,7 +57,6 @@ module.exports = (req, res) => {
             </tr>`;
         });
 
-        // The HTML structure that perfectly mimics the native browser index
         const html = `
         <!DOCTYPE html>
         <html lang="en">
@@ -148,12 +144,11 @@ module.exports = (req, res) => {
         </body>
         </html>`;
 
-        // Send back the dynamically constructed HTML
         res.setHeader('Content-Type', 'text/html');
         res.status(200).send(html);
         
     } catch (err) {
         console.error("Error reading directory:", err);
-        res.status(500).send('Error generating directory index');
+        res.status(500).send(`Error generating directory index: ${err.message}`);
     }
 };
