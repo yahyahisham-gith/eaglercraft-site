@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Web Edition | Official Homepage</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        header {
+            background-color: #1b1b1b;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4caf50;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        nav a:hover, nav a.active {
+            color: #4caf50;
+        }
+
+        .hero {
+            padding: 60px 20px 40px 20px;
+            text-align: center;
+            background-color: #181818;
+            border-bottom: 1px solid #262626;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            line-height: 1.5;
+        }
+
+        .btn-green {
+            background-color: #388e3c;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 #1b5e20;
+            display: inline-block;
+        }
+
+        .btn-green:hover {
+            background-color: #4caf50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .homepage-notice {
+            background-color: #1a271d;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            padding: 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .homepage-notice p {
+            color: #dddddd;
+            font-size: 1.1rem;
+        }
+
+        .homepage-notice a {
+            color: #ffeb3b;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .homepage-notice a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Minecraft Web Edition</div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="launcher.html">Launcher</a>
+            <a href="downloads.html">Downloads</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Play Minecraft In Your Browser</h1>
+        <p>Launch standalone versions of Eaglercraft (1.8.8, 1.12.2, and 1.5.2) directly inside your browser canvas with zero configuration.</p>
+        <a href="launcher.html" class="btn-green">Open Web Launcher</a>
+    </section>
+
+    <div class="container">
+        <div class="homepage-notice">
+            <p>The original Eaglercraft website is: <br>
+            <a href="https://eaglercraft.com/" target="_blank" rel="noopener">https://eaglercraft.com/</a></p>
+            
+            <p>Open this link to play the latest official Eaglercraft: <br>
+            <a href="https://eaglercraft.com/play" target="_blank" rel="noopener">https://eaglercraft.com/play</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

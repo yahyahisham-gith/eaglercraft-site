@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads | Minecraft Web Client</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        header {
+            background-color: #1b1b1b;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4caf50;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        nav a:hover, nav a.active {
+            color: #4caf50;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .official-notice {
+            background-color: #1a271d;
+            border: 2px solid #4caf50;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .official-notice h3 {
+            color: #81c784;
+        }
+
+        .official-notice p {
+            color: #dddddd;
+            line-height: 1.5;
+        }
+
+        .official-notice a {
+            color: #ffeb3b;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .download-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-info h3 {
+            color: #ffffff;
+            margin-bottom: 4px;
+            font-size: 1.05rem;
+        }
+
+        .download-info p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .btn-download {
+            background-color: #388e3c;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            box-shadow: 0 3px 0 #1b5e20;
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .btn-download:hover {
+            background-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Minecraft Web Client</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="launcher.html">Launcher</a>
+            <a href="downloads.html" class="active">Downloads</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="official-notice">
+            <h3>🎮 Play Online</h3>
+            <p>Open this link to play the latest official Eaglercraft directly online:</p>
+            <p><a href="https://eaglercraft.com/play" target="_blank" rel="noopener">https://eaglercraft.com/play</a></p>
+        </div>
+
+        <div class="official-notice">
+            <h3>📌 Official Downloads Page</h3>
+            <p>If you want the actual latest Eaglercraft client downloads and server files from the creators, open:</p>
+            <p><a href="https://eaglercraft.com/p/downloads" target="_blank" rel="noopener">https://eaglercraft.com/p/downloads</a></p>
+        </div>
+        
+        <div class="official-notice" style="border-color: #888; background-color: #222;">
+            <p>The original Eaglercraft website is: <a href="https://eaglercraft.com/" target="_blank" rel="noopener">https://eaglercraft.com/</a></p>
+        </div>
+
+        <h2 style="margin: 30px 0 15px 0; color: #4caf50; font-size: 1.3rem; text-transform: uppercase;">Offline Client Downloads</h2>
+
+        <div class="download-card">
+            <div class="download-info">
+                <h3>EaglercraftX 1.8.8 (WASM-GC Offline)</h3>
+                <p>High-performance build from EaglercraftX_1.8_u53_WASM-GC_Offline.</p>
+            </div>
+            <a href="client-1.8-wasm.html" download="EaglercraftX_1.8_WASM.html" class="btn-download">Download</a>
+        </div>
+
+        <div class="download-card">
+            <div class="download-info">
+                <h3>EaglercraftX 1.8.8 (JavaScript Offline)</h3>
+                <p>JavaScript build from EaglercraftX_1.8_u53_Offline_Signed.</p>
+            </div>
+            <a href="client-1.8-js.html" download="EaglercraftX_1.8_JS.html" class="btn-download">Download</a>
+        </div>
+
+        <div class="download-card">
+            <div class="download-info">
+                <h3>Eaglercraft 1.12.2 (WASM Offline)</h3>
+                <p>High-performance build from Eaglercraft_1.12.2_u3_WASM_Offline.</p>
+            </div>
+            <a href="client-1.12-wasm.html" download="Eaglercraft_1.12.2_WASM.html" class="btn-download">Download</a>
+        </div>
+
+        <div class="download-card">
+            <div class="download-info">
+                <h3>Eaglercraft 1.12.2 (JavaScript Offline)</h3>
+                <p>JavaScript build from Eaglercraft_1.12.2_u3_Offline.</p>
+            </div>
+            <a href="client-1.12-js.html" download="Eaglercraft_1.12.2_JS.html" class="btn-download">Download</a>
+        </div>
+
+        <div class="download-card">
+            <div class="download-info">
+                <h3>Eaglercraft 1.5.2 (JavaScript Offline)</h3>
+                <p>Standalone version 1.5.2 build from Eaglercraft_1.5.2-sp2.01_Offline.</p>
+            </div>
+            <a href="client-1.5-js.html" download="Eaglercraft_1.5.2_JS.html" class="btn-download">Download</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

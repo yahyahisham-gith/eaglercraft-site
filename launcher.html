@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Web Launcher</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #1b1b1b;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4caf50;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        nav a:hover, nav a.active {
+            color: #4caf50;
+        }
+
+        .launcher-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #181818;
+        }
+
+        .launcher-box {
+            background-color: #212121;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .launcher-box h2 {
+            color: #4caf50;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .launcher-box p.desc {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        select {
+            background-color: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-play {
+            background-color: #388e3c;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 #1b5e20;
+            transition: background 0.15s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        .btn-play:hover {
+            background-color: #4caf50;
+        }
+
+        .btn-play:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1b5e20;
+        }
+        
+        .official-links {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .official-links p {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .official-links a {
+            color: #ffeb3b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .notice-direct-load {
+            font-size: 0.8rem;
+            color: #81c784;
+            text-align: center;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Minecraft Web Launcher</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="launcher.html" class="active">Launcher</a>
+            <a href="downloads.html">Downloads</a>
+        </nav>
+    </header>
+
+    <div class="launcher-body">
+        <div class="launcher-box">
+            <div>
+                <h2>Select Installation</h2>
+                <p class="desc">Choose your preferred Eaglercraft version and runtime build to launch instantly.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="versionSelect">Version & Engine</label>
+                <select id="versionSelect">
+                    <option value="client-1.8-wasm.html">EaglercraftX 1.8.8 (WASM-GC Offline)</option>
+                    <option value="client-1.8-js.html">EaglercraftX 1.8.8 (JavaScript Offline)</option>
+                    <option value="client-1.12-wasm.html">Eaglercraft 1.12.2 (WASM Offline)</option>
+                    <option value="client-1.12-js.html">Eaglercraft 1.12.2 (JavaScript Offline)</option>
+                    <option value="client-1.5-js.html">Eaglercraft 1.5.2 (JavaScript Offline)</option>
+                </select>
+            </div>
+
+            <p class="notice-direct-load">This will directly open the actual game HTML file (No frames).</p>
+            <button class="btn-play" onclick="launchGame()">Open Actual Game File</button>
+            
+            <div class="official-links">
+                <p>The original Eaglercraft website is <a href="https://eaglercraft.com/" target="_blank">https://eaglercraft.com/</a></p>
+                <p>Open <a href="https://eaglercraft.com/play" target="_blank">https://eaglercraft.com/play</a> for latest Eaglercraft</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function launchGame() {
+            const selectedFile = document.getElementById('versionSelect').value;
+            // Directly navigates the current window to the actual Eaglercraft HTML file
+            window.location.href = selectedFile;
+        }
+    </script>
+</body>
+</html>
