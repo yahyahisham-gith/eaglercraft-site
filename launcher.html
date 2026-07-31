@@ -6,112 +6,209 @@
     <title>Eaglercraft Launcher</title>
     <style>
         body {
-            background-color: #111111;
-            color: #ffffff;
-            font-family: 'Times New Roman', Times, serif;
+            background-color: #0f0f11;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
+        
         h1 {
-            font-size: 2.2rem;
-            border-bottom: 1px solid #555555;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
+
         .container {
             width: 100%;
-            max-width: 800px;
-            background-color: #1a1a1a;
-            border: 1px solid #444444;
-            padding: 25px;
-            border-radius: 6px;
+            max-width: 650px;
+            background-color: #1c1c1f;
+            border: 1px solid #333;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             box-sizing: border-box;
         }
+
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            color: #cccccc;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #aaaaaa;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        select, button {
+
+        select {
             width: 100%;
-            padding: 12px;
-            background-color: #222222;
-            border: 1px solid #555555;
+            padding: 14px;
+            background-color: #121214;
+            border: 1px solid #444;
             color: #ffffff;
-            font-size: 1.1rem;
-            font-family: 'Times New Roman', Times, serif;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            box-sizing: border-box;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            border-radius: 6px;
             outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
         }
-        select option {
-            background-color: #222222;
-            color: #ffffff;
+
+        select:focus {
+            border-color: #8ab4f8;
         }
+
         .mode-group {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
+
         .mode-card {
             flex: 1;
-            background-color: #222222;
-            border: 1px solid #555555;
-            padding: 15px;
+            background-color: #121214;
+            border: 2px solid #333;
+            padding: 20px 15px;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: border-color 0.2s;
+            transition: all 0.2s ease-in-out;
         }
+
+        .mode-card:hover {
+            border-color: #666;
+            background-color: #1a1a1d;
+        }
+
         .mode-card.selected {
             border-color: #8ab4f8;
-            background-color: #2a2a2a;
+            background-color: rgba(138, 180, 248, 0.08);
         }
+
         .mode-card h3 {
-            margin: 0 0 5px 0;
-            color: #8ab4f8;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+            font-size: 1.15rem;
         }
+
         .mode-card p {
             margin: 0;
-            font-size: 0.9rem;
-            color: #aaaaaa;
+            font-size: 0.85rem;
+            color: #888888;
+            line-height: 1.5;
         }
+
         button.launch-btn {
-            background-color: #388e3c;
-            cursor: pointer;
+            width: 100%;
+            padding: 16px;
+            background-color: #34a853;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
             font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.2s, transform 0.1s;
         }
+
         button.launch-btn:hover {
-            background-color: #4caf50;
+            background-color: #3bc05f;
         }
+
+        button.launch-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Base Container Hidden initially */
         #frameContainer {
             display: none;
-            width: 100%;
-            max-width: 1100px;
-            height: 650px;
-            margin-top: 20px;
-            border: 1px solid #555555;
+            z-index: 1000;
+        }
+
+        /* STATE 1: Fullscreen Layout */
+        #frameContainer.is-fullscreen {
+            display: block !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: #000000;
         }
-        iframe {
+
+        #frameContainer.is-fullscreen #closeBtn {
+            display: none !important; /* Hide close button in fullscreen */
+        }
+
+        #frameContainer.is-fullscreen iframe {
             width: 100%;
             height: 100%;
             border: none;
+            border-radius: 0;
+        }
+
+        /* STATE 2: Windowed Layout (Appears on un-fullscreening) */
+        #frameContainer.is-windowed {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 1000px;
+            height: 75vh;
+            max-height: 650px;
+        }
+
+        #frameContainer.is-windowed #closeBtn {
+            display: block !important;
+            margin-bottom: 15px;
+            padding: 12px 28px;
+            background-color: #e53935;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.4);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        #frameContainer.is-windowed #closeBtn:hover {
+            background-color: #f44336;
+        }
+
+        #frameContainer.is-windowed #closeBtn:active {
+            transform: scale(0.96);
+        }
+
+        #frameContainer.is-windowed iframe {
+            width: 100%;
+            flex: 1;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            background-color: #000000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
         }
     </style>
 </head>
 <body>
-    <h1>Eaglercraft Launcher</h1>
-    
+    <h1 id="title">Eaglercraft Launcher</h1>
+
     <div class="container" id="configPanel">
         <label for="versionSelect">Select Client Version:</label>
         <select id="versionSelect">
@@ -126,23 +223,26 @@
         <div class="mode-group">
             <div class="mode-card selected" id="modeFrame" onclick="setMode('frame')">
                 <h3>Frame Mode</h3>
-                <p>Embeds and runs the client inside an interactive container frame.</p>
+                <p>Embeds the client seamlessly into a true fullscreen container.</p>
             </div>
             <div class="mode-card" id="modeFile" onclick="setMode('file')">
                 <h3>Game File Mode</h3>
-                <p>Loads the raw client file directly in the browser window.</p>
+                <p>Navigates away and loads the raw client HTML file directly.</p>
             </div>
         </div>
 
         <button class="launch-btn" onclick="launchGame()">Launch Game</button>
     </div>
 
+    <!-- Dynamic Game Window & Floating Close Button -->
     <div id="frameContainer">
+        <button id="closeBtn" onclick="closeGame()">CLOSE GAME</button>
         <iframe id="gameFrame"></iframe>
     </div>
 
     <script>
         let currentMode = 'frame';
+        let isGameActive = false;
 
         function setMode(mode) {
             currentMode = mode;
@@ -150,22 +250,75 @@
             document.getElementById('modeFile').classList.toggle('selected', mode === 'file');
         }
 
+        // Accurately check if browser is fullscreen (both HTML5 API and F11 native window fullscreen)
+        function checkIsFullscreen() {
+            const isHTML5Fullscreen = !!document.fullscreenElement;
+            const isF11Fullscreen = (window.innerWidth >= screen.width - 5 && window.innerHeight >= screen.height - 5);
+            return isHTML5Fullscreen || isF11Fullscreen;
+        }
+
+        // Central layout switcher
+        function updateLayout() {
+            const container = document.getElementById('frameContainer');
+            const configPanel = document.getElementById('configPanel');
+            const title = document.getElementById('title');
+
+            if (!isGameActive) {
+                container.style.display = 'none';
+                container.className = '';
+                configPanel.style.display = 'block';
+                title.style.display = 'block';
+                return;
+            }
+
+            // Hide main menu UI
+            configPanel.style.display = 'none';
+            title.style.display = 'none';
+
+            // Toggle layout between windowed and fullscreen based on real-time browser status
+            if (checkIsFullscreen()) {
+                container.className = 'is-fullscreen';
+            } else {
+                container.className = 'is-windowed';
+            }
+        }
+
         function launchGame() {
             const select = document.getElementById('versionSelect');
             const targetFile = select.value;
 
             if (currentMode === 'file') {
-                // Actual game file mode: opens the standalone client file directly
                 window.location.href = '/' + targetFile;
             } else {
-                // Frame mode: hides config panel and loads the client inside the iframe
-                document.getElementById('configPanel').style.display = 'none';
-                const container = document.getElementById('frameContainer');
-                const iframe = document.getElementById('gameFrame');
-                container.style.display = 'block';
-                iframe.src = '/' + targetFile;
+                isGameActive = true;
+                document.getElementById('gameFrame').src = '/' + targetFile;
+                
+                // Request browser fullscreen
+                try {
+                    document.documentElement.requestFullscreen();
+                } catch (e) {
+                    console.log("Fullscreen API request suppressed or blocked.");
+                }
+
+                updateLayout();
             }
         }
+
+        function closeGame() {
+            isGameActive = false;
+            document.getElementById('gameFrame').src = '';
+            
+            // Exit HTML5 fullscreen if active
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+
+            updateLayout();
+        }
+
+        // Re-evaluate layout instantly when window resizes or fullscreen changes (including pressing F11 back and forth)
+        document.addEventListener('fullscreenchange', updateLayout);
+        window.addEventListener('resize', updateLayout);
     </script>
 </body>
 </html>
