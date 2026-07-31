@@ -3,218 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Web Launcher</title>
+    <title>Eaglercraft Launcher</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-
         body {
-            background-color: #121212;
+            background-color: #111111;
             color: #ffffff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background-color: #1b1b1b;
-            border-bottom: 2px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-        }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #4caf50;
-            text-transform: uppercase;
-        }
-
-        nav {
-            display: flex;
-            gap: 20px;
-        }
-
-        nav a {
-            color: #aaa;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-
-        nav a:hover, nav a.active {
-            color: #4caf50;
-        }
-
-        .launcher-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
             padding: 20px;
-            background-color: #181818;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        .launcher-box {
-            background-color: #212121;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 40px;
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 1px solid #555555;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
             width: 100%;
-            max-width: 550px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
         }
-
-        .launcher-box h2 {
-            color: #4caf50;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            text-align: center;
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1a1a1a;
+            border: 1px solid #444444;
+            padding: 25px;
+            border-radius: 6px;
+            box-sizing: border-box;
         }
-
-        .launcher-box p.desc {
-            color: #aaa;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
         label {
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #888;
-            text-transform: uppercase;
-        }
-
-        select {
-            background-color: #2a2a2a;
-            color: white;
-            border: 1px solid #444;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: bold;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .btn-play {
-            background-color: #388e3c;
-            color: white;
+            display: block;
+            margin-bottom: 8px;
             font-size: 1.1rem;
-            font-weight: bold;
-            padding: 14px;
-            border: none;
+            color: #cccccc;
+        }
+        select, button {
+            width: 100%;
+            padding: 12px;
+            background-color: #222222;
+            border: 1px solid #555555;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-family: 'Times New Roman', Times, serif;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        select option {
+            background-color: #222222;
+            color: #ffffff;
+        }
+        .mode-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .mode-card {
+            flex: 1;
+            background-color: #222222;
+            border: 1px solid #555555;
+            padding: 15px;
+            text-align: center;
             border-radius: 4px;
             cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 0 #1b5e20;
-            transition: background 0.15s, transform 0.1s;
-            margin-top: 10px;
+            transition: border-color 0.2s;
         }
-
-        .btn-play:hover {
+        .mode-card.selected {
+            border-color: #8ab4f8;
+            background-color: #2a2a2a;
+        }
+        .mode-card h3 {
+            margin: 0 0 5px 0;
+            color: #8ab4f8;
+        }
+        .mode-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #aaaaaa;
+        }
+        button.launch-btn {
+            background-color: #388e3c;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        button.launch-btn:hover {
             background-color: #4caf50;
         }
-
-        .btn-play:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #1b5e20;
+        #frameContainer {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            height: 650px;
+            margin-top: 20px;
+            border: 1px solid #555555;
+            background-color: #000000;
         }
-        
-        .official-links {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #333;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .official-links p {
-            font-size: 0.85rem;
-            color: #aaa;
-        }
-
-        .official-links a {
-            color: #ffeb3b;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .notice-direct-load {
-            font-size: 0.8rem;
-            color: #81c784;
-            text-align: center;
-            margin-top: -5px;
-            margin-bottom: 10px;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
+    <h1>Eaglercraft Launcher</h1>
+    
+    <div class="container" id="configPanel">
+        <label for="versionSelect">Select Client Version:</label>
+        <select id="versionSelect">
+            <option value="client-1.12-js.html">Eaglercraft 1.12 (JS)</option>
+            <option value="client-1.12-wasm.html">Eaglercraft 1.12 (WASM)</option>
+            <option value="client-1.5-js.html">Eaglercraft 1.5 (JS)</option>
+            <option value="client-1.8-js.html">Eaglercraft 1.8 (JS)</option>
+            <option value="client-1.8-wasm.html">Eaglercraft 1.8 (WASM)</option>
+        </select>
 
-    <header>
-        <div class="logo">Minecraft Web Launcher</div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="launcher.html" class="active">Launcher</a>
-            <a href="downloads.html">Downloads</a>
-        </nav>
-    </header>
-
-    <div class="launcher-body">
-        <div class="launcher-box">
-            <div>
-                <h2>Select Installation</h2>
-                <p class="desc">Choose your preferred Eaglercraft version and runtime build to launch instantly.</p>
+        <label>Select Launch Mode:</label>
+        <div class="mode-group">
+            <div class="mode-card selected" id="modeFrame" onclick="setMode('frame')">
+                <h3>Frame Mode</h3>
+                <p>Embeds and runs the client inside an interactive container frame.</p>
             </div>
-
-            <div class="form-group">
-                <label for="versionSelect">Version & Engine</label>
-                <select id="versionSelect">
-                    <option value="client-1.8-wasm.html">EaglercraftX 1.8.8 (WASM-GC Offline)</option>
-                    <option value="client-1.8-js.html">EaglercraftX 1.8.8 (JavaScript Offline)</option>
-                    <option value="client-1.12-wasm.html">Eaglercraft 1.12.2 (WASM Offline)</option>
-                    <option value="client-1.12-js.html">Eaglercraft 1.12.2 (JavaScript Offline)</option>
-                    <option value="client-1.5-js.html">Eaglercraft 1.5.2 (JavaScript Offline)</option>
-                </select>
-            </div>
-
-            <p class="notice-direct-load">This will directly open the actual game HTML file (No frames).</p>
-            <button class="btn-play" onclick="launchGame()">Open Actual Game File</button>
-            
-            <div class="official-links">
-                <p>The original Eaglercraft website is <a href="https://eaglercraft.com/" target="_blank">https://eaglercraft.com/</a></p>
-                <p>Open <a href="https://eaglercraft.com/play" target="_blank">https://eaglercraft.com/play</a> for latest Eaglercraft</p>
+            <div class="mode-card" id="modeFile" onclick="setMode('file')">
+                <h3>Game File Mode</h3>
+                <p>Loads the raw client file directly in the browser window.</p>
             </div>
         </div>
+
+        <button class="launch-btn" onclick="launchGame()">Launch Game</button>
+    </div>
+
+    <div id="frameContainer">
+        <iframe id="gameFrame"></iframe>
     </div>
 
     <script>
+        let currentMode = 'frame';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('modeFrame').classList.toggle('selected', mode === 'frame');
+            document.getElementById('modeFile').classList.toggle('selected', mode === 'file');
+        }
+
         function launchGame() {
-            const selectedFile = document.getElementById('versionSelect').value;
-            // Directly navigates the current window to the actual Eaglercraft HTML file
-            window.location.href = selectedFile;
+            const select = document.getElementById('versionSelect');
+            const targetFile = select.value;
+
+            if (currentMode === 'file') {
+                // Actual game file mode: opens the standalone client file directly
+                window.location.href = '/' + targetFile;
+            } else {
+                // Frame mode: hides config panel and loads the client inside the iframe
+                document.getElementById('configPanel').style.display = 'none';
+                const container = document.getElementById('frameContainer');
+                const iframe = document.getElementById('gameFrame');
+                container.style.display = 'block';
+                iframe.src = '/' + targetFile;
+            }
         }
     </script>
 </body>
