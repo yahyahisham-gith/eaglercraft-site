@@ -25,7 +25,7 @@ function formatDate(date) {
 
 module.exports = (req, res) => {
     // Serve its own source code when requested directly
-    if (req.url && req.url.includes('api/files.js')) {
+    if (req.url && req.url.includes('files.js')) {
         try {
             const selfContent = fs.readFileSync(__filename, 'utf8');
             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -40,7 +40,7 @@ module.exports = (req, res) => {
     const hasSCo = query.sCo !== undefined;
     const hasOSc = query.oSc !== undefined;
 
-    // If visiting /files without authorization parameters, serve code.html
+    // If visiting without authorization parameters, serve code.html entry page
     if (!hasSCo && !hasOSc) {
         try {
             const codeHtmlPath = path.join(process.cwd(), 'api', 'code.html');
@@ -49,8 +49,14 @@ module.exports = (req, res) => {
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
                 res.status(200).send(codeContent);
                 return;
+            } else {
+                res.status(401).send('Unauthorized - code.html missing');
+                return;
             }
-        } catch (e) {}
+        } catch (e) {
+            res.status(500).send('Server Error');
+            return;
+        }
     }
 
     const modeKey = hasSCo ? 'sCo=true' : 'oSc=true';
@@ -79,6 +85,8 @@ module.exports = (req, res) => {
             if (ext === '.html') contentType = 'text/html; charset=utf-8';
             else if (ext === '.js') contentType = 'application/javascript; charset=utf-8';
             else if (ext === '.json') contentType = 'application/json; charset=utf-8';
+            else if (ext === '.png') contentType = 'image/png';
+            else if (ext === '.jpg' || ext === '.jpeg') contentType = 'image/jpeg';
 
             const fileContent = fs.readFileSync(targetPath);
             res.setHeader('Content-Type', contentType);
@@ -88,7 +96,7 @@ module.exports = (req, res) => {
 
         const files = fs.readdirSync(targetPath);
 
-        // Apply blacklisted items ONLY when viewing via ?oSc
+        // Apply blacklisted items ONLY when viewing via ?oSc. Zero exclusions when ?sCo is active.
         const filteredFiles = files.filter(file => {
             if (hasOSc) {
                 const blacklistedItems = ['__vc', '.git', 'node_modules'];
